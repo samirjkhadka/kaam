@@ -137,6 +137,8 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
   const { role, email, password } = req.body;
 
+
+  console.log(role, email, password);
   if (!role) {
     return next(new ErrorHandler("Please enter your role.", 400, 1));
   }
@@ -189,4 +191,144 @@ export const getUser = async (req, res, next) => {
     success: true,
     user,
   });
+};
+
+export const updateProfile = async (req, res, next) => {
+  try {
+    const updateUserData = {
+      firstName: req.body.firstName,
+      middleName: req.body.middleName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      phone: req.body.phone,
+      address: req.body.address,
+      password: req.body.password,
+      role: req.body.role,
+      niches: {
+        firstNiche: req.body.firstNiche,
+        secondNiche: req.body.secondNiche,
+        thirdNiche: req.body.thirdNiche,
+      },
+      coverLetter: req.body.coverLetter,
+    };
+
+    const { firstNiche, secondNiche, thirdNiche } = updateUserData.niches;
+
+    if (
+      req.user.role === "seeker" &&
+      (!firstNiche || !secondNiche || !thirdNiche)
+    ) {
+      return next(
+        new ErrorHandler(
+          "Please enter your first niche, second niche and third niche.",
+          400
+        )
+      );
+    }
+    if (req.files) {
+      const resume = req.files.resume;
+      if (resume) {
+        try {
+          const currentResumeId = req.user.resume.public_id;
+
+          if (currentResumeId) {
+            await cloudinary.uploader.destroy(currentResumeId);
+          }
+          const cloudinaryResponse = await cloudinary.uploader.upload(
+            resume.tempFilePath,
+            { folder: "Job_Seekers_Resume" }
+          );
+          if (!cloudinaryResponse || cloudinaryResponse.error) {
+            return next(
+              new ErrorHandler("Failed to upload resume to cloud.", 500)
+            );
+          }
+          updateUserData.resume = {
+            public_id: cloudinaryResponse.public_id,
+            url: cloudinaryResponse.secure_url,
+          };
+        } catch (error) {
+          return next(new ErrorHandler("Failed to upload resume", 500));
+        }
+      }
+    }
+
+    if (req.files) {
+      const resume = req.files.profileImage;
+      if (profileImage) {
+        try {
+          const currentProfileImageId = req.user.profileImage.public_id;
+
+          if (currentProfileImageId) {
+            await cloudinary.uploader.destroy(currentProfileImageId);
+          }
+          const cloudinaryResponse = await cloudinary.uploader.upload(
+            profileImage.tempFilePath,
+            { folder: "Job_Seekers_profileImage" }
+          );
+          if (!cloudinaryResponse || cloudinaryResponse.error) {
+            return next(
+              new ErrorHandler("Failed to upload profileImage to cloud.", 500)
+            );
+          }
+          updateUserData.profileImage = {
+            public_id: cloudinaryResponse.public_id,
+            url: cloudinaryResponse.secure_url,
+          };
+        } catch (error) {
+          return next(new ErrorHandler("Failed to upload profileImage", 500));
+        }
+      }
+    }
+
+    const user = await userModel.findByIdAndUpdate(
+      req.user._id,
+      updateUserData,
+      {
+        new: true, // return the updated document
+        runValidators: true,
+        useFindAndModify: false, // validate the updated document against the schema
+      }
+    );
+    res.status(200).json({
+      success: true,
+      user,
+      message: "Profile updated successfully.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updatePassword = async (req, res, next) => {
+  try {
+    const { oldPassword, newPassword, confirmNewPassword } = req.body;
+
+    if (!oldPassword || !newPassword || !confirmNewPassword) {
+      return next(
+        new ErrorHandler(
+          "Please enter old password, new password and confirm new password.",
+          400,
+          1
+        )
+      );
+    }
+
+    const user = await userModel.findById(req.user._id).select("+password");
+
+    const isPasswordMatched = await user.comparePassword(oldPassword);
+    if (!isPasswordMatched) {
+      return next(new ErrorHandler("Invalid old password.", 400, 1));
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      return next(new ErrorHandler("Password does not match.", 400, 1));
+    }
+
+    user.password = newPassword;
+    await user.save();
+    sendToken(user, 200, res, "Password Updated.");
+  } catch (error) {
+    next(error);
+  }
 };
