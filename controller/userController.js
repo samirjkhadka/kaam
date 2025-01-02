@@ -50,7 +50,7 @@ export const register = async (req, res, next) => {
     }
 
     // validate niches
-    if (role === "Job Seeker" && (!firstNiche || !secondNiche || !thirdNiche)) {
+    if (role === "Seeker" && (!firstNiche || !secondNiche || !thirdNiche)) {
       return next(
         new ErrorHandler("Please provide your preferred job niches.", 400, 1)
       );
@@ -137,8 +137,6 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
   const { role, email, password } = req.body;
 
-
-  console.log(role, email, password);
   if (!role) {
     return next(new ErrorHandler("Please enter your role.", 400, 1));
   }

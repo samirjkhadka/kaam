@@ -65,15 +65,15 @@ const userSchema = new mongoose.Schema(
     niches: {
       firstNiche: {
         type: String,
-        required: [true, "Please enter your first niche"],
+        // required: [true, "Please enter your first niche"],
       },
       secondNiche: {
         type: String,
-        required: [true, "Please enter your second niche"],
+        // required: [true, "Please enter your second niche"],
       },
       thirdNiche: {
         type: String,
-        required: [true, "Please enter your third niche"],
+        // required: [true, "Please enter your third niche"],
       },
     },
     profileImage: {
