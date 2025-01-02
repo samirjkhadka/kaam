@@ -119,14 +119,14 @@ export const seekerGetAllApplication = async (req, res, next) => {
 export const deleteApplication = async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log(id);
+   
     const application = await applicationModel.findById(id);
  
     if (!application) {
       return next(new ErrorHandler("Application not found.", 404));
     }
     const role = req.user.role;
-    console.log(role);
+  
     switch (role) {
       case "Employer":
         application.deletedBy.employer = true;
