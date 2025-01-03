@@ -11,6 +11,7 @@ import fileUpload from "express-fileupload";
 import userRouter from "./routes/userRoutes.js";
 import router from "./routes/index.js";
 import { errorMiddleware } from "./middlewares/errorMiddleware.js";
+import { newsLetterCron } from "./cronJobs/newsLetterCron.js";
 
 const app = express();
 dotenv.config();
@@ -34,6 +35,7 @@ app.use(
 app.use(cookieParser());
 app.use(router)
 //error middleware
+newsLetterCron();
 connectDB();
 app.use(errorMiddleware);
 
