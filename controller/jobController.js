@@ -39,9 +39,9 @@ export const createJob = async (req, res, next) => {
       return next(new ErrorHandler("Please enter location", 400));
     }
 
-    if (!description) {
-      return next(new ErrorHandler("Please enter description", 400));
-    }
+    // if (!description) {
+    //   return next(new ErrorHandler("Please enter description", 400));
+    // }
 
     if (!responsibilities) {
       return next(new ErrorHandler("Please enter responsibilities", 400));
@@ -55,13 +55,13 @@ export const createJob = async (req, res, next) => {
       return next(new ErrorHandler("Please enter salary", 400));
     }
 
-    if (!experience) {
-      return next(new ErrorHandler("Please enter experience", 400));
-    }
+    // if (!experience) {
+    //   return next(new ErrorHandler("Please enter experience", 400));
+    // }
 
-    if (!jobNiches) {
-      return next(new ErrorHandler("Please enter jobNiches", 400));
-    }
+    // if (!jobNiches) {
+    //   return next(new ErrorHandler("Please enter jobNiches", 400));
+    // }
 
     //if companywebsite is present then check if title and url is present
     if (companyWebsiteTitle && companyWebsiteUrl) {

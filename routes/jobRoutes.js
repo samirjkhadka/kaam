@@ -14,11 +14,12 @@ const jobRouter = express.Router();
 jobRouter.post("/createJob", userAuth, isAuthorized("Employer"), createJob);
 jobRouter.put("/updateJob", userAuth, isAuthorized("Employer"), updateJob);
 jobRouter.get("/getMyJobs", userAuth, isAuthorized("Employer"), getMyJobs);
-jobRouter.get("/getAllJobs", userAuth, isAuthorized("Employer"), getAllJobs);
+// jobRouter.get("/getAllJobs", userAuth, isAuthorized("Employer"), getAllJobs);
+jobRouter.get("/getAllJobs",  getAllJobs);
 jobRouter.get(
   "/getJobsById/:id",
-  userAuth,
-  isAuthorized("Employer"),
+  // userAuth,
+  // isAuthorized("Employer"),
   getJobById
 );
 jobRouter.delete(
