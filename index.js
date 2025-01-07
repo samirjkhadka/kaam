@@ -5,7 +5,6 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import connectDB from "./config/dbConfig/dbConfig.js";
 
-
 import cloudinary from "cloudinary";
 import fileUpload from "express-fileupload";
 import userRouter from "./routes/userRoutes.js";
@@ -19,21 +18,22 @@ app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
 
 const port = process.env.PORT || 5000;
 
-
-
-const allowedOrigins = ["https://kaamkhojau.netlify.app/", "http://localhost:3000"];
+const allowedOrigins = [
+  "https://kaamkhojau.netlify.app/",
+  "http://localhost:3000",
+];
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: "https://kaamkhojau.netlify.app",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
 app.use(cookieParser());
-app.use(router)
+app.use(router);
 //error middleware
 newsLetterCron();
 connectDB();
