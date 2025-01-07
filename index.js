@@ -21,7 +21,7 @@ const port = process.env.PORT || 5000;
 
 
 
-const allowedOrigins = ["http://localhost:5173", "http://localhost:3000"];
+const allowedOrigins = ["https://kaamkhojau.netlify.app/", "http://localhost:3000"];
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
